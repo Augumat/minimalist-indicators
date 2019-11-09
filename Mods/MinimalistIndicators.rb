@@ -58,7 +58,7 @@ class PokemonDataBox < SpriteWrapper
     miTypeRes = AnimatedBitmap.new(_INTL("Data/Mods/MinimalistIndicatorsTypes"))
     miIsFoe = ((@battler.index == 1) || (@battler.index == 3))
     # grab the types of the battlers (also handle Illusion case)
-    if isConst?(@battler.ability, PBAbilities, :ILLUSION) & @battler.effects[PBEffects::Illusion]
+    if isConst?(@battler.ability, PBAbilities, :ILLUSION) && @battler.effects[PBEffects::Illusion]
       miType1 = @battler.effects[PBEffects::Illusion].type1
       miType2 = @battler.effects[PBEffects::Illusion].type2
     else
@@ -72,9 +72,46 @@ class PokemonDataBox < SpriteWrapper
     miOffset = (miIsFoe) ? 84 : 14
     # display the primary type in the leftmost position
     self.bitmap.blt(@spritebaseX + miOffset, 2, miTypeRes.bitmap, miPrimaryType)
-    # if applicable also display the secondary type in the next position
+    # if applicable also display the secondary type in the rightmost position
     if miType1 != miType2
       self.bitmap.blt(@spritebaseX + miOffset + 32, 2, miTypeRes.bitmap, miSecondaryType)
+    end
+  end
+
+  def miDisplayMegaStatus
+    # only continue if an overlay actually needs to be displayed
+    return if !(@battler.isMega? && @battler.isUltra?)
+    # grab the correct overlay sprites based on which box is being displayed
+    case @battler.index
+      when 0
+        miMegaRes  = AnimatedBitmap.new(_INTL("Data/Mods/PlayerSM"))
+        miPulseRes = AnimatedBitmap.new(_INTL("Data/Mods/PlayerSP"))
+        miUltraRes = AnimatedBitmap.new(_INTL("Data/Mods/PlayerSU"))
+      when 1
+        miMegaRes  = AnimatedBitmap.new(_INTL("Data/Mods/FoeM"))
+        miPulseRes = AnimatedBitmap.new(_INTL("Data/Mods/FoeP"))
+        miUltraRes = AnimatedBitmap.new(_INTL("Data/Mods/FoeU"))
+      when 2
+        miMegaRes  = AnimatedBitmap.new(_INTL("Data/Mods/PlayerDM"))
+        miPulseRes = AnimatedBitmap.new(_INTL("Data/Mods/PlayerDP"))
+        miUltraRes = AnimatedBitmap.new(_INTL("Data/Mods/PlayerDU"))
+      when 3
+        miMegaRes  = AnimatedBitmap.new(_INTL("Data/Mods/FoeM"))
+        miPulseRes = AnimatedBitmap.new(_INTL("Data/Mods/FoeP"))
+        miUltraRes = AnimatedBitmap.new(_INTL("Data/Mods/FoeU"))
+    end
+    # define the rect that the overlay is being taken from
+    miDataBoxRect = Rect.new(0, 0, @databox.width, @databox.height)
+    # display the required overlay
+    if @battler.isUltra?
+      # is ultra, so display the ultra overlay
+      self.bitmap.blt(@spritebaseX, 0, miUltraRes.bitmap, miDataBoxRect)
+    elsif @battler.isMega? && @battler.item == 606 && $game_switches[457]
+      # is pulse, so display the pulse overlay
+      self.bitmap.blt(@spritebaseX, 0, miPulseRes.bitmap, miDataBoxRect)
+    else
+      # must only be mega, so display the mega overlay
+      self.bitmap.blt(@spritebaseX, 0, miMegaRes.bitmap, miDataBoxRect)
     end
   end
 
@@ -83,7 +120,11 @@ class PokemonDataBox < SpriteWrapper
   def refresh
     self.bitmap.clear
     return if !@battler.pokemon
+
+    # TODO WHERE TO DISPLAY NEW BACK
     self.bitmap.blt(0,0,@databox.bitmap,Rect.new(0,0,@databox.width,@databox.height))
+
+
     base=PokeBattle_SceneConstants::BOXTEXTBASECOLOR
     shadow=PokeBattle_SceneConstants::BOXTEXTSHADOWCOLOR
     pokename=@battler.name
@@ -181,8 +222,9 @@ class PokemonDataBox < SpriteWrapper
 
     #####MODDED
 
-    miDisplayStats # display the stat stages of the battlers
-    miDisplayTypes # display the types of the battlers
+    miDisplayMegaStatus # display whether the battler is a mega evolution or a pulse
+    miDisplayStats      # display the stat stages of the battlers
+    miDisplayTypes      # display the types of the battlers
 
     #####/MODDED
   end
