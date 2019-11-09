@@ -16,15 +16,16 @@ end
 class PokemonDataBox < SpriteWrapper
   #####MODDED
 
-  #################
-  # Organization; #
-  # 0 atk # 1 def #
-  # 2 spa # 3 spd #
-  # 4 acc # 5 eva #
-  # 6 crt # 7 spe #
-  #################
-  def aGetStage(i)
-    case i
+  # Layout;
+  ################################
+  # type1 type2 # 0 atk # 1 def #
+  #            # 2 spa # 3 spd #
+  #           # 4 acc # 5 eva #
+  #          # 6 crt # 7 spe #
+  ###########################
+
+  def miGetStatLevel(statCode)
+    case statCode
       when 0
         stat = PBStats::ATTACK
       when 1
@@ -49,8 +50,33 @@ class PokemonDataBox < SpriteWrapper
     return @battler.stages[stat]
   end
 
-  #todo add stat func
-  #todo add type func
+  def miDisplayStats
+    # stub
+  end
+
+  def miDisplayTypes
+    miTypeRes = AnimatedBitmap.new(_INTL("Data/Mods/MinimalistIndicatorsTypes"))
+    miIsFoe = ((@battler.index == 1) || (@battler.index == 3))
+    # grab the types of the battlers (also handle Illusion case)
+    if isConst?(@battler.ability, PBAbilities, :ILLUSION) & @battler.effects[PBEffects::Illusion]
+      miType1 = @battler.effects[PBEffects::Illusion].type1
+      miType2 = @battler.effects[PBEffects::Illusion].type2
+    else
+      miType1 = @battler.type1
+      miType2 = @battler.type2
+    end
+    # define the rect in miTypeRes that corresponds to the found type
+    miPrimaryType   = Rect.new(0, miType1*4, 30, 4)
+    miSecondaryType = Rect.new(0, miType2*4, 30, 4)
+    # compute the offset needed based on whether the current databox is a foe or the player
+    miOffset = (miIsFoe) ? 84 : 14
+    # display the primary type in the leftmost position
+    self.bitmap.blt(@spritebaseX + miOffset, 2, miTypeRes.bitmap, miPrimaryType)
+    # if applicable also display the secondary type in the next position
+    if miType1 != miType2
+      self.bitmap.blt(@spritebaseX + miOffset + 32, 2, miTypeRes.bitmap, miSecondaryType)
+    end
+  end
 
   #####/MODDED
 
@@ -73,21 +99,29 @@ class PokemonDataBox < SpriteWrapper
       textpos.push([_INTL("♀"),genderX,6,false,Color.new(248,88,40),shadow])
     end
     pbDrawTextPositions(self.bitmap,textpos)
+
+
     pbSetSmallFont(self.bitmap)
     textpos=[
        [_INTL("Lv{1}",@battler.level),@spritebaseX+202,8,true,base,shadow]
     ]
+
+
     if @showhp
       hpstring=_ISPRINTF("{1: 2d}/{2: 2d}",self.hp,@battler.totalhp)
       textpos.push([hpstring,@spritebaseX+188,48,true,base,shadow])
     end
     pbDrawTextPositions(self.bitmap,textpos)
+
+
     imagepos=[]
     if @battler.pokemon.isShiny?
       shinyX=206
       shinyX=2 if (@battler.index&1)==0 # If player's Pokémon
       imagepos.push(["Graphics/Pictures/shiny.png",@spritebaseX+shinyX,36,0,0,-1,-1])
     end
+
+
     megaY=34
     megaY=50 if (@battler.index&1)==0 # If player's Pokémon
     megaX=8
@@ -107,6 +141,8 @@ class PokemonDataBox < SpriteWrapper
       self.bitmap.blt(@spritebaseX+24,36,@statuses.bitmap,
          Rect.new(0,(@battler.status-1)*16,44,16))
     end
+
+
     hpGaugeSize=PokeBattle_SceneConstants::HPGAUGESIZE
     hpgauge=@battler.totalhp==0 ? 0 : (self.hp*hpGaugeSize/@battler.totalhp)
     hpgauge=2 if hpgauge==0 && self.hp>0
@@ -131,6 +167,8 @@ class PokemonDataBox < SpriteWrapper
     # fill with HP color
     self.bitmap.fill_rect(@spritebaseX+hpGaugeX,hpGaugeY,hpgauge,2,hpcolors[hpzone*2])
     self.bitmap.fill_rect(@spritebaseX+hpGaugeX,hpGaugeY+2,hpgauge,4,hpcolors[hpzone*2+1])
+
+
     if @showexp
       # fill with EXP color
       expGaugeX=PokeBattle_SceneConstants::EXPGAUGE_X
@@ -143,17 +181,16 @@ class PokemonDataBox < SpriteWrapper
 
     #####MODDED
 
-    # TODO add stat func call here
-    # TODO add type func call here
-    
+    miDisplayStats # display the stat stages of the battlers
+    miDisplayTypes # display the types of the battlers
+
     #####/MODDED
   end
 end
 
-#Pls stop using the wrong SWM version on the wrong Reborn Episode :(
+# vibe check (for version)
 if !(getversion[0..1] == "18")
-  Kernel.pbMessage("Sorry, but this version of SWM was designed for Pokemon Reborn Episode 18")
-  Kernel.pbMessage("Using SWM in an episode it was not designed for is no longer allowed.")
-  Kernel.pbMessage("It simply causes too many problems.")
+  Kernel.pbMessage("VIBE CHECK")
+  Kernel.pbMessage("YOU FAILED")
   exit
 end
