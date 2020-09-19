@@ -258,9 +258,9 @@ class PokemonDataBox < SpriteWrapper
   def miDisplayCaught
     if @battler.owned
       if @battler.index == 1
-        self.bitmap.blt(198, 38, @@miCaught[0], Rect.new(0, 0, 10, 10))
+        self.bitmap.blt(202, 38, @@miCaught[0], Rect.new(0, 0, 10, 10))
       elsif @battler.index == 3
-        self.bitmap.blt(198, 38, @@miCaught[0], Rect.new(0, 0, 10, 10))
+        self.bitmap.blt(202, 38, @@miCaught[0], Rect.new(0, 0, 10, 10))
       end
     end
     # TODO redo this to accumulate sprite list to feed to
