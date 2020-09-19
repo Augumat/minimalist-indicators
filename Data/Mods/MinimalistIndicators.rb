@@ -276,11 +276,11 @@ class PokemonDataBox < SpriteWrapper
         when 0
           self.bitmap.blt(238, 38, @@miShiny[0], Rect.new(0, 0, 10, 10))
         when 1
-          self.bitmap.blt(178, 38, @@miShiny[0], Rect.new(0, 0, 10, 10))
+          self.bitmap.blt(184, 38, @@miShiny[0], Rect.new(0, 0, 10, 10))
         when 2
           self.bitmap.blt(238, 38, @@miShiny[0], Rect.new(0, 0, 10, 10))
         when 3
-          self.bitmap.blt(178, 38, @@miShiny[0], Rect.new(0, 0, 10, 10))
+          self.bitmap.blt(184, 38, @@miShiny[0], Rect.new(0, 0, 10, 10))
       end
     end
     # TODO redo this to accumulate sprite list to feed to
