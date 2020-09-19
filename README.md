@@ -17,15 +17,25 @@ Completely overhauled UI with adjusted placement of elements and extra functiona
 - [x] Display caught icon
 - [x] Display gender or lack thereof
 
-## Gallery
-Enough with the words, how does it look?
+## TODO
+- [ ] Get more and better screenshots for showcasing the mod
+- [ ] Do an optimization pass or two
+  - [ ] Create a separate branch for the nicely segmented code and one for the ugly optimized code
+- [ ] Do something with the XP bar so it can be viewed in double battles
+- [ ] Add Happiness meter
 
+## Gallery
+Enough with the words, I'll bet you're wondering how it looks!
 Well here ya go;
 
+![A screenshot of a 1v1](https://www.rebornevo.com/uploads/monthly_2020_09/ex2.png.c78536173af599fda9a9aca445860ae2.png)
 
+![A screenshot of a 2v2](https://www.rebornevo.com/uploads/monthly_2020_09/ex1.png.2ade91744035932bc3f54f3f954ec2bb.png)
+
+(there are more screenshots and a breakdown of the UI components in the forum post, I'll refrain from crossposting them here because they would take up a lot of space and what's here already is enough to give you an idea of what's going on)
 
 ## Installation
-Check out the [Mod Market post]() I made for the mod on the Reborn forums, it includes the instructions for installation.
+Check out the [Mod Market post](https://www.rebornevo.com/forums/topic/53413-minimalist-indicators-v100-e1841/) I made for the mod on the Reborn forums, it includes instructions for installation.
 
 The thread itself will also be the best way to contact me about the mod for any questions or issues you encounter, and if you do have an issue it may have already been discussed there.
 
