@@ -103,7 +103,7 @@ class PokemonDataBox < SpriteWrapper
     end
     # load types
     for i in 0..19
-      @@miType[i] = Bitmap.new(30, 6).blt(0, 0, miTypeSheet.bitmap, Rect.new(0, i*6, 30, i*6+6))
+      @@miType[i] = Bitmap.new(30, 10).blt(0, 0, miTypeSheet.bitmap, Rect.new(0, i*10, 30, i*10+10))
     end
     # load stat icons
     for i in 0..7
@@ -204,36 +204,36 @@ class PokemonDataBox < SpriteWrapper
     # display the primary type in the leftmost position
     case @battler.index
       when 0
-        self.bitmap.blt(40,  4, @@miType[miType1], Rect.new(0, 0, 30, 6))
+        self.bitmap.blt(40,  2, @@miType[miType1], Rect.new(0, 0, 30, 10))
       when 1
-        self.bitmap.blt(168, 4, @@miType[miType1], Rect.new(0, 0, 30, 6))
+        self.bitmap.blt(168, 2, @@miType[miType1], Rect.new(0, 0, 30, 10))
       when 2
-        self.bitmap.blt(40,  4, @@miType[miType1], Rect.new(0, 0, 30, 6))
+        self.bitmap.blt(40,  2, @@miType[miType1], Rect.new(0, 0, 30, 10))
       when 3
-        self.bitmap.blt(168, 4, @@miType[miType1], Rect.new(0, 0, 30, 6))
+        self.bitmap.blt(168, 2, @@miType[miType1], Rect.new(0, 0, 30, 10))
     end
     # display the secondary type in the rightmost position
     case @battler.index
       when 0
-        self.bitmap.blt(72,  4, @@miType[miType2], Rect.new(0, 0, 30, 6))
+        self.bitmap.blt(72,  2, @@miType[miType2], Rect.new(0, 0, 30, 10))
       when 1
-        self.bitmap.blt(200, 4, @@miType[miType2], Rect.new(0, 0, 30, 6))
+        self.bitmap.blt(200, 2, @@miType[miType2], Rect.new(0, 0, 30, 10))
       when 2
-        self.bitmap.blt(72,  4, @@miType[miType2], Rect.new(0, 0, 30, 6))
+        self.bitmap.blt(72,  2, @@miType[miType2], Rect.new(0, 0, 30, 10))
       when 3
-        self.bitmap.blt(200, 4, @@miType[miType2], Rect.new(0, 0, 30, 6))
+        self.bitmap.blt(200, 2, @@miType[miType2], Rect.new(0, 0, 30, 10))
     end
     # if the pokemon only has one type, join the two icons so it's one long bar instead
     if miType1 == miType2
       case @battler.index
         when 0
-          self.bitmap.blt(70,  4, @@miType[miType2], Rect.new(0, 0, 2, 6))
+          self.bitmap.blt(70,  2, @@miType[miType2], Rect.new(14, 0, 16, 10))
         when 1
-          self.bitmap.blt(198, 4, @@miType[miType2], Rect.new(0, 0, 2, 6))
+          self.bitmap.blt(198, 2, @@miType[miType2], Rect.new(14, 0, 16, 10))
         when 2
-          self.bitmap.blt(70,  4, @@miType[miType2], Rect.new(0, 0, 2, 6))
+          self.bitmap.blt(70,  2, @@miType[miType2], Rect.new(14, 0, 16, 10))
         when 3
-          self.bitmap.blt(198, 4, @@miType[miType2], Rect.new(0, 0, 2, 6))
+          self.bitmap.blt(198, 2, @@miType[miType2], Rect.new(14, 0, 16, 10))
       end
     end
   end
