@@ -59,13 +59,14 @@ class PokemonDataBox < SpriteWrapper
   # 7) speed
   @@miStatIcon = []
 
-  # [Misc]
-  @@miShiny = []
-  @@miCaught = []
-  # 0) male
-  # 1) female
-  # 2) genderless
-  @@miGender = []
+  # [Bars]
+  @@miBarXP = []
+  # 0) >50%
+  # 1) >25%
+  # 2) >0%
+  @@miBarHP = []
+
+  # [Status]
   # 0) badly poisoned
   # 1) sleep
   # 2) poison
@@ -73,6 +74,14 @@ class PokemonDataBox < SpriteWrapper
   # 4) paralysis
   # 5) freeze
   @@miEffect = []
+
+  # [Misc]
+  @@miShiny = []
+  @@miCaught = []
+  # 0) male
+  # 1) female
+  # 2) genderless
+  @@miGender = []
 
   # flag for whether or not the player is currently in a double battle
   @@miDoubles = false
@@ -91,7 +100,7 @@ class PokemonDataBox < SpriteWrapper
     # load the resource sprite sheets and grab what is needed from them
     miBaseSheet = AnimatedBitmap.new(_INTL("Data/Mods/MinimalistIndicatorsBase"))
     miTypeSheet = AnimatedBitmap.new(_INTL("Data/Mods/MinimalistIndicatorsType"))
-    miStatSheet = AnimatedBitmap.new(_INTL("Data/Mods/MinimalistIndicatorsStat"))
+    miBarsSheet = AnimatedBitmap.new(_INTL("Data/Mods/MinimalistIndicatorsBars"))
     miMiscSheet = AnimatedBitmap.new(_INTL("Data/Mods/MinimalistIndicatorsMisc"))
     # load base boxes
     for i in 0..4
@@ -105,16 +114,22 @@ class PokemonDataBox < SpriteWrapper
     for i in 0..19
       @@miType[i] = Bitmap.new(30, 10).blt(0, 0, miTypeSheet.bitmap, Rect.new(0, i*10, 30, i*10+10))
     end
+    # load xp bar
+    @@miBarXP[0] = Bitmap.new(192, 10).blt(0, 0, miBarsSheet.bitmap, Rect.new(0, 0, 192, 10))
+    # load hp bars
+    for i in 0..2
+      @@miBarHP[i] = Bitmap.new(120, 10).blt(0, 0, miBarsSheet.bitmap, Rect.new(0, i*10+10, 120, i*10+20))
+    end
     # load stat icons
     for i in 0..7
-      @@miStatIcon[i] = Bitmap.new(12, 12).blt(0, 0, miStatSheet.bitmap, Rect.new(i*12, 0, i*12+12, 12))
+      @@miStatIcon[i] = Bitmap.new(12, 12).blt(0, 0, miBarsSheet.bitmap, Rect.new(i*12, 40, i*12+12, 52))
     end
     # load stat bars
-    @@miStatLevelPositive[0] = Bitmap.new(12, 12).blt(0, 0, miStatSheet.bitmap, Rect.new(0, 12, 12, 24))
-    @@miStatLevelNegative[0] = Bitmap.new(12, 12).blt(0, 0, miStatSheet.bitmap, Rect.new(0, 24, 12, 36))
+    @@miStatLevelPositive[0] = Bitmap.new(12, 12).blt(0, 0, miBarsSheet.bitmap, Rect.new(0, 52, 12, 64))
+    @@miStatLevelNegative[0] = Bitmap.new(12, 12).blt(0, 0, miBarsSheet.bitmap, Rect.new(0, 64, 12, 76))
     for i in 1..7
-      @@miStatLevelPositive[i] = Bitmap.new(2, 12).blt(0, 0, miStatSheet.bitmap, Rect.new(i*2+10, 12, i*2+12, 24))
-      @@miStatLevelNegative[i] = Bitmap.new(2, 12).blt(0, 0, miStatSheet.bitmap, Rect.new(i*2+10, 24, i*2+12, 36))
+      @@miStatLevelPositive[i] = Bitmap.new(2, 12).blt(0, 0, miBarsSheet.bitmap, Rect.new(i*2+10, 52, i*2+12, 64))
+      @@miStatLevelNegative[i] = Bitmap.new(2, 12).blt(0, 0, miBarsSheet.bitmap, Rect.new(i*2+10, 64, i*2+12, 76))
     end
     # load status effects
     for i in 0..5
@@ -322,30 +337,25 @@ class PokemonDataBox < SpriteWrapper
   # Displays the xp bar of the current battler
   def miDisplayXP
     if @showexp
-      self.bitmap.fill_rect(52, 76, self.exp, 2, PokeBattle_SceneConstants::EXPCOLORSHADOW)
-      self.bitmap.fill_rect(52, 78, self.exp, 2, PokeBattle_SceneConstants::EXPCOLORBASE  )
+      # find the correct width to use
+      xpGauge = (self.exp % 2 == 0) ? (self.exp) : (self.exp - 1)
+      # display the bar
+      self.bitmap.blt(52, 74, @@miBarXP[0], Rect.new(0, 0, xpGauge, 10))
     end
   end
 
   # Displays the battler's HP bar
   def miDisplayHP
     # determine the length of the bar in its current state
-    hpLen = 121
+    hpLen = 120
     hpGauge = @battler.totalhp == 0 ? 0 : (hpLen * self.hp / @battler.totalhp)
     hpGauge = 2 if hpGauge == 0 && self.hp > 0
+    hpGauge = hpGauge - 1 if hpGauge % 2 == 1
     # determine what color the bar should be displayed as based on the pokemon's current HP
     hpZone = 0
     hpZone = 1 if self.hp <= (@battler.totalhp / 2).floor
     hpZone = 2 if self.hp <= (@battler.totalhp / 4).floor
     hpBlack = Color.new(0,0,0)
-    hpColors=[
-       PokeBattle_SceneConstants::HPCOLORGREENDARK,
-       PokeBattle_SceneConstants::HPCOLORGREEN,
-       PokeBattle_SceneConstants::HPCOLORYELLOWDARK,
-       PokeBattle_SceneConstants::HPCOLORYELLOW,
-       PokeBattle_SceneConstants::HPCOLORREDDARK,
-       PokeBattle_SceneConstants::HPCOLORRED
-    ]
     # fill trail of hp currently decreasing
     if @animatingHP && self.hp > 0
       case @battler.index
@@ -362,17 +372,13 @@ class PokemonDataBox < SpriteWrapper
     # display existing hp
     case @battler.index
       when 0
-        self.bitmap.fill_rect(108, 38, hpGauge, 10, hpColors[hpZone*2]  )
-        self.bitmap.fill_rect(108, 40, hpGauge, 6,  hpColors[hpZone*2+1])
+        self.bitmap.blt(108, 38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge, 10))
       when 1
-        self.bitmap.fill_rect(54,  38, hpGauge, 10, hpColors[hpZone*2]  )
-        self.bitmap.fill_rect(54,  40, hpGauge, 6,  hpColors[hpZone*2+1])
+        self.bitmap.blt(54, 38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge, 10))
       when 2
-        self.bitmap.fill_rect(108, 38, hpGauge, 10, hpColors[hpZone*2]  )
-        self.bitmap.fill_rect(108, 40, hpGauge, 6,  hpColors[hpZone*2+1])
+        self.bitmap.blt(108, 38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge, 10))
       when 3
-        self.bitmap.fill_rect(54,  38, hpGauge, 10, hpColors[hpZone*2]  )
-        self.bitmap.fill_rect(54,  40, hpGauge, 6,  hpColors[hpZone*2+1])
+        self.bitmap.blt(54, 38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge, 10))
     end
   end
 
