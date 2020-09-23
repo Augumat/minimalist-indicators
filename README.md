@@ -16,6 +16,8 @@ Completely overhauled UI with adjusted placement of elements and extra functiona
 - [x] Display shiny status
 - [x] Display caught icon
 - [x] Display gender or lack thereof
+- [x] Display HP and XP bars with customizable sprites
+- [x] Display HP, Level, and Name text with customizable palettes
 
 ## TODO
 - [ ] Get more and better screenshots for showcasing the mod
