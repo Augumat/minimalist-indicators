@@ -41,8 +41,10 @@ class PokemonDataBox < SpriteWrapper
   @@miBase = [[],[],[],[]]
 
   # [Types]
-  # 0-19) all types 0-19 (not gonna list em here)
-  @@miType = []
+  # 0) fullwidth for monotypes
+  # 1) halfwidth for dual-types
+  #   0-19) all types 0-19 (not gonna list em here)
+  @@miType = [[],[]]
 
   # [Stat Changes]
   # 0) stat outline for icon window
@@ -121,7 +123,8 @@ class PokemonDataBox < SpriteWrapper
     end
     # load types
     for i in 0..19
-      @@miType[i] = Bitmap.new(30, 10).blt(0, 0, miTypeSheet.bitmap, Rect.new(0, i*10, 30, i*10+10))
+      @@miType[0][i] = Bitmap.new(62, 10).blt(0, 0, miTypeSheet.bitmap, Rect.new(0,  i*10, 62, i*10+10))
+      @@miType[1][i] = Bitmap.new(30, 10).blt(0, 0, miTypeSheet.bitmap, Rect.new(62, i*10, 92, i*10+10))
     end
     # load xp bar
     @@miBarXP[0] = Bitmap.new(192, 10).blt(0, 0, miBarsSheet.bitmap, Rect.new(0, 0, 192, 10))
@@ -194,7 +197,7 @@ class PokemonDataBox < SpriteWrapper
         if @@miDoubles
           @spriteY = 164
         else
-          @spriteY = 198
+          @spriteY = 186
         end
         miTemp = Bitmap.new(@spritebaseX + 272, 86)
       when 1
@@ -202,7 +205,7 @@ class PokemonDataBox < SpriteWrapper
         if @@miDoubles
           @spriteY = 2
         else
-          @spriteY = 44
+          @spriteY = 48
         end
         miTemp = Bitmap.new(@spritebaseX + 270, 62)
       when 2
@@ -229,39 +232,32 @@ class PokemonDataBox < SpriteWrapper
       miType1 = @battler.type1
       miType2 = @battler.type2
     end
-    # display the primary type in the leftmost position
-    case @battler.index
-      when 0
-        self.bitmap.blt(40,  2, @@miType[miType1], Rect.new(0, 0, 30, 10))
-      when 1
-        self.bitmap.blt(168, 2, @@miType[miType1], Rect.new(0, 0, 30, 10))
-      when 2
-        self.bitmap.blt(40,  2, @@miType[miType1], Rect.new(0, 0, 30, 10))
-      when 3
-        self.bitmap.blt(168, 2, @@miType[miType1], Rect.new(0, 0, 30, 10))
-    end
-    # display the secondary type in the rightmost position
-    case @battler.index
-      when 0
-        self.bitmap.blt(72,  2, @@miType[miType2], Rect.new(0, 0, 30, 10))
-      when 1
-        self.bitmap.blt(200, 2, @@miType[miType2], Rect.new(0, 0, 30, 10))
-      when 2
-        self.bitmap.blt(72,  2, @@miType[miType2], Rect.new(0, 0, 30, 10))
-      when 3
-        self.bitmap.blt(200, 2, @@miType[miType2], Rect.new(0, 0, 30, 10))
-    end
-    # if the pokemon only has one type, join the two icons so it's one long bar instead
+    # if the pokemon only has one type display the fullwidth icon, otherwise display both
     if miType1 == miType2
       case @battler.index
         when 0
-          self.bitmap.blt(70,  2, @@miType[miType2], Rect.new(14, 0, 2, 10))
+          self.bitmap.blt(40,  2, @@miType[0][miType1], Rect.new(0, 0, 62, 10))
         when 1
-          self.bitmap.blt(198, 2, @@miType[miType2], Rect.new(14, 0, 2, 10))
+          self.bitmap.blt(168, 2, @@miType[0][miType1], Rect.new(0, 0, 62, 10))
         when 2
-          self.bitmap.blt(70,  2, @@miType[miType2], Rect.new(14, 0, 2, 10))
+          self.bitmap.blt(40,  2, @@miType[0][miType1], Rect.new(0, 0, 62, 10))
         when 3
-          self.bitmap.blt(198, 2, @@miType[miType2], Rect.new(14, 0, 2, 10))
+          self.bitmap.blt(168, 2, @@miType[0][miType1], Rect.new(0, 0, 62, 10))
+      end
+    else
+      case @battler.index
+        when 0
+          self.bitmap.blt(40,  2, @@miType[1][miType1], Rect.new(0, 0, 30, 10))
+          self.bitmap.blt(72,  2, @@miType[1][miType2], Rect.new(0, 0, 30, 10))
+        when 1
+          self.bitmap.blt(168, 2, @@miType[1][miType1], Rect.new(0, 0, 30, 10))
+          self.bitmap.blt(200, 2, @@miType[1][miType2], Rect.new(0, 0, 30, 10))
+        when 2
+          self.bitmap.blt(40,  2, @@miType[1][miType1], Rect.new(0, 0, 30, 10))
+          self.bitmap.blt(72,  2, @@miType[1][miType2], Rect.new(0, 0, 30, 10))
+        when 3
+          self.bitmap.blt(168, 2, @@miType[1][miType1], Rect.new(0, 0, 30, 10))
+          self.bitmap.blt(200, 2, @@miType[1][miType2], Rect.new(0, 0, 30, 10))
       end
     end
   end
