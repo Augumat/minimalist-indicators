@@ -83,6 +83,15 @@ class PokemonDataBox < SpriteWrapper
   # 2) genderless
   @@miGender = []
 
+  # [Text Colors]
+  # 0) name base
+  # 1) name shadow
+  # 2) level base
+  # 3) level shadow
+  # 4) hp base
+  # 5) hp shadow
+  @@miTextColors = []
+
   # flag for whether or not the player is currently in a double battle
   @@miDoubles = false
 
@@ -142,6 +151,10 @@ class PokemonDataBox < SpriteWrapper
     @@miGender[0] = Bitmap.new(6, 6).blt(0, 0, miMiscSheet.bitmap, Rect.new(50, 0,  56, 6 ))
     @@miGender[1] = Bitmap.new(6, 6).blt(0, 0, miMiscSheet.bitmap, Rect.new(50, 6,  56, 12))
     @@miGender[2] = Bitmap.new(6, 6).blt(0, 0, miMiscSheet.bitmap, Rect.new(50, 12, 56, 18))
+    # load text colors
+    for i in 0..5
+      @@miTextColors[i] = miMiscSheet.bitmap.get_pixel(56, i)
+    end
     # by default the scene is not recognized as a double battle
     @@miDoubles = false
     # turn on Ready flag so this initialization doesn't trigger again
@@ -242,13 +255,13 @@ class PokemonDataBox < SpriteWrapper
     if miType1 == miType2
       case @battler.index
         when 0
-          self.bitmap.blt(70,  2, @@miType[miType2], Rect.new(14, 0, 16, 10))
+          self.bitmap.blt(70,  2, @@miType[miType2], Rect.new(14, 0, 2, 10))
         when 1
-          self.bitmap.blt(198, 2, @@miType[miType2], Rect.new(14, 0, 16, 10))
+          self.bitmap.blt(198, 2, @@miType[miType2], Rect.new(14, 0, 2, 10))
         when 2
-          self.bitmap.blt(70,  2, @@miType[miType2], Rect.new(14, 0, 16, 10))
+          self.bitmap.blt(70,  2, @@miType[miType2], Rect.new(14, 0, 2, 10))
         when 3
-          self.bitmap.blt(198, 2, @@miType[miType2], Rect.new(14, 0, 16, 10))
+          self.bitmap.blt(198, 2, @@miType[miType2], Rect.new(14, 0, 2, 10))
       end
     end
   end
@@ -467,16 +480,18 @@ class PokemonDataBox < SpriteWrapper
 
   # Displays the battler's name, gender, and level
   def miDisplayText
-    base = PokeBattle_SceneConstants::BOXTEXTBASECOLOR
-    shadow = PokeBattle_SceneConstants::BOXTEXTSHADOWCOLOR
     pbSetSystemFont(self.bitmap)
     textpos = []
     case @battler.index
       when 0
         # display name
+        base = @@miTextColors[0]
+        shadow = @@miTextColors[1]
         textpos.push([@battler.name, 124, 4, false, base, shadow])
         pbDrawTextPositions(self.bitmap, textpos)
         # display level
+        base = @@miTextColors[2]
+        shadow = @@miTextColors[3]
         pbSetSmallFont(self.bitmap)
         if !$MKXP
           textX = 82
@@ -500,6 +515,8 @@ class PokemonDataBox < SpriteWrapper
           textpos = [[_INTL("Lv{1}", @battler.level), textX, 15, true, base, shadow]]
         end
         # display HP
+        base = @@miTextColors[4]
+        shadow = @@miTextColors[5]
         if @showhp
           hpstring = _ISPRINTF("{1: 2d} /{2: 2d}", self.hp, @battler.totalhp)
           if !$MKXP
@@ -510,9 +527,13 @@ class PokemonDataBox < SpriteWrapper
         end
       when 1
         # display name
+        base = @@miTextColors[0]
+        shadow = @@miTextColors[1]
         textpos.push([@battler.name, 20, 4, false, base, shadow])
         pbDrawTextPositions(self.bitmap, textpos)
         # display level
+        base = @@miTextColors[2]
+        shadow = @@miTextColors[3]
         pbSetSmallFont(self.bitmap)
         if !$MKXP
           textX = 200
@@ -537,9 +558,13 @@ class PokemonDataBox < SpriteWrapper
         end
       when 2
         # display name
+        base = @@miTextColors[0]
+        shadow = @@miTextColors[1]
         textpos.push([@battler.name, 124, 4, false, base, shadow])
         pbDrawTextPositions(self.bitmap, textpos)
         # display level
+        base = @@miTextColors[2]
+        shadow = @@miTextColors[3]
         pbSetSmallFont(self.bitmap)
         if !$MKXP
           textX = 82
@@ -564,9 +589,13 @@ class PokemonDataBox < SpriteWrapper
         end
       when 3
         # display name
+        base = @@miTextColors[0]
+        shadow = @@miTextColors[1]
         textpos.push([@battler.name, 20, 4, false, base, shadow])
         pbDrawTextPositions(self.bitmap, textpos)
         # display level
+        base = @@miTextColors[2]
+        shadow = @@miTextColors[3]
         pbSetSmallFont(self.bitmap)
         if !$MKXP
           textX = 200
