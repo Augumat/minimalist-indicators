@@ -395,29 +395,33 @@ class PokemonDataBox < SpriteWrapper
           self.bitmap.fill_rect(54,  38, hpLen * @starthp / @battler.totalhp, 10, hpBlack)
       end
     end
-    # display existing hp
-    case @battler.index
-      when 0
-        self.bitmap.blt(108, 38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge - 2, 10))
-      when 1
-        self.bitmap.blt(54,  38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge - 2, 10))
-      when 2
-        self.bitmap.blt(108, 38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge - 2, 10))
-      when 3
-        self.bitmap.blt(54,  38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge - 2, 10))
-    end
-    # display edge of hp bar if not at full health
-    if self.hp != @battler.totalhp
+    # display existing hp as full bar or with edge if hp < maxHp
+    if self.hp == @battler.totalhp
+      case @battler.index
+        when 0
+          self.bitmap.blt(108, 38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge, 10))
+        when 1
+          self.bitmap.blt(54,  38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge, 10))
+        when 2
+          self.bitmap.blt(108, 38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge, 10))
+        when 3
+          self.bitmap.blt(54,  38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge, 10))
+      end
+    else
       hpTemp = (hpLen * 1.0 * @starthp) / @battler.totalhp
       case @battler.index
         when 0
-          miDrawHpEdge(106 + hpGauge, 38, hpGauge, hpZone, hpTemp - hpTemp.floor())
+          self.bitmap.blt(108, 38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge - 2, 10))
+          miDrawHpEdge(108 + hpGauge - 2, 38, hpGauge, hpZone, hpTemp - hpTemp.floor())
         when 1
-          miDrawHpEdge(52 + hpGauge,  38, hpGauge, hpZone, hpTemp - hpTemp.floor())
+          self.bitmap.blt(54,  38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge - 2, 10))
+          miDrawHpEdge(54 + hpGauge - 2,  38, hpGauge, hpZone, hpTemp - hpTemp.floor())
         when 2
-          miDrawHpEdge(106 + hpGauge, 38, hpGauge, hpZone, hpTemp - hpTemp.floor())
+          self.bitmap.blt(108, 38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge - 2, 10))
+          miDrawHpEdge(108 + hpGauge - 2, 38, hpGauge, hpZone, hpTemp - hpTemp.floor())
         when 3
-          miDrawHpEdge(52 + hpGauge,  38, hpGauge, hpZone, hpTemp - hpTemp.floor())
+          self.bitmap.blt(54,  38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge - 2, 10))
+          miDrawHpEdge(54 + hpGauge - 2,  38, hpGauge, hpZone, hpTemp - hpTemp.floor())
       end
     end
   end
