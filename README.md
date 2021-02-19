@@ -17,6 +17,7 @@ Completely overhauled UI with adjusted placement of elements and extra functiona
 - [x] Display caught icon
 - [x] Display gender or lack thereof
 - [x] Display HP and XP bars with customizable sprites
+  - [x] Display HP bar with more detail by progressively darkening the edge based on fractional amounts of health
 - [x] Display HP, Level, and Name text with customizable palettes
 
 ## TODO

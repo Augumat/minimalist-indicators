@@ -352,6 +352,22 @@ class PokemonDataBox < SpriteWrapper
       self.bitmap.blt(52, 74, @@miBarXP[0], Rect.new(0, 0, xpGauge, 10))
     end
   end
+  
+  # Helper method for miDisplayHP, draws the tip of the HP bar with the given transparency scale
+  def miDrawHpEdge(x, y, deGauge, deZone, deEdgeScale)
+    # define tip
+    deTip = Bitmap.new(2, 10).blt(0, 0, @@miBarHP[deZone], Rect.new(deGauge - 2, 0, 2, 10))
+    # set alpha values according to the scalar
+    for i in 0..1
+      for j in 0..9
+        deTemp = deTip.get_pixel(i, j)
+        deTemp.alpha=(255.0 * deEdgeScale)
+        deTip.set_pixel(i, j, deTemp)
+      end
+    end
+    # display the tip
+    self.bitmap.blt(x, y, deTip, Rect.new(0, 0, 2, 10))
+  end
 
   # Displays the battler's HP bar
   def miDisplayHP
@@ -365,6 +381,7 @@ class PokemonDataBox < SpriteWrapper
     hpZone = 1 if self.hp <= (@battler.totalhp / 2).floor
     hpZone = 2 if self.hp <= (@battler.totalhp / 4).floor
     hpBlack = Color.new(0,0,0)
+    # determine the color of the bar-end
     # fill trail of hp currently decreasing
     if @animatingHP && self.hp > 0
       case @battler.index
@@ -381,13 +398,27 @@ class PokemonDataBox < SpriteWrapper
     # display existing hp
     case @battler.index
       when 0
-        self.bitmap.blt(108, 38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge, 10))
+        self.bitmap.blt(108, 38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge - 2, 10))
       when 1
-        self.bitmap.blt(54, 38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge, 10))
+        self.bitmap.blt(54,  38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge - 2, 10))
       when 2
-        self.bitmap.blt(108, 38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge, 10))
+        self.bitmap.blt(108, 38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge - 2, 10))
       when 3
-        self.bitmap.blt(54, 38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge, 10))
+        self.bitmap.blt(54,  38, @@miBarHP[hpZone], Rect.new(0, 0, hpGauge - 2, 10))
+    end
+    # display edge of hp bar if not at full health
+    if self.hp != @battler.totalhp
+      hpTemp = (hpLen * 1.0 * @starthp) / @battler.totalhp
+      case @battler.index
+        when 0
+          miDrawHpEdge(106 + hpGauge, 38, hpGauge, hpZone, hpTemp - hpTemp.floor())
+        when 1
+          miDrawHpEdge(52 + hpGauge,  38, hpGauge, hpZone, hpTemp - hpTemp.floor())
+        when 2
+          miDrawHpEdge(106 + hpGauge, 38, hpGauge, hpZone, hpTemp - hpTemp.floor())
+        when 3
+          miDrawHpEdge(52 + hpGauge,  38, hpGauge, hpZone, hpTemp - hpTemp.floor())
+      end
     end
   end
 
